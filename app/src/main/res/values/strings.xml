@@ -3,4 +3,8 @@
     <string name="enter_server_address_title">Server URL or IP address:</string>
     <string name="enter_server_address">Enter server address</string>
     <string name="button_validate">Validate</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="unknown">Unknown</string>
 </resources>

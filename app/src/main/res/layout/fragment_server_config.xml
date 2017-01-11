@@ -1,0 +1,40 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/serverConfigFragment"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context="hk.myles.smsmanager.ServerConfigFragment">
+
+        <Button
+            android:id="@+id/button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:onClick="validateServer"
+            android:text="@string/button_validate" />
+
+        <EditText
+            android:id="@+id/serverAddressEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/button"
+            android:layout_alignParentStart="true"
+            android:gravity="center"
+            android:hint="@string/enter_server_address" />
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/serverAddressEditText"
+            android:layout_alignParentStart="true"
+            android:gravity="center"
+            android:text="@string/enter_server_address_title" />
+
+    </RelativeLayout>
+</FrameLayout>

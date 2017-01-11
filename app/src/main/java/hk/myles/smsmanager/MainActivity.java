@@ -1,24 +1,22 @@
 package hk.myles.smsmanager;
 
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
+import android.net.Uri;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
-import android.widget.EditText;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AlertDialog;
 import android.view.View;
+import android.widget.EditText;
 
 import com.android.volley.AuthFailureError;
-import com.android.volley.Cache;
-import com.android.volley.Network;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.BasicNetwork;
-import com.android.volley.toolbox.DiskBasedCache;
-import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -27,53 +25,42 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends FragmentActivity
+        implements OnFragmentInteractionListener {
 
-    EditText serverAddressEditText;
-    public static String EXTRA_MESSAGE = "hk.myles.smsmanager.MESSAGE";
+    private EditText serverAddressEditText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // load the xml file
         setContentView(R.layout.activity_main);
 
-        serverAddressEditText = (EditText) findViewById(R.id.serverAddressEditText); //check this point carefully on your program
-    }
+        // Check that the activity is using the layout version with
+        // the fragment_container FrameLayout
+        if (findViewById(R.id.fragmentContainer) != null) {
 
-    /**
-     * Called when user clicks Validate button
-     **/
-    public void validateServer(View view) {
+            // However, if we're being restored from a previous state,
+            // then we don't need to do anything and should return or else
+            // we could end up with overlapping fragments.
+            if (savedInstanceState != null) {
+                return;
+            }
 
-        String server_address = serverAddressEditText.getText().toString();
+            // Create a new Fragment to be placed in the activity layout
+            ServerConfigFragment serverConfigFragment = new ServerConfigFragment();
 
+            // In case this activity was started with special instructions from an
+            // Intent, pass the Intent's extras to the fragment as arguments
+            serverConfigFragment.setArguments(getIntent().getExtras());
 
-        // if the address is good
-        /*Intent intent = new Intent(this, DisplayMessageActivity.class);
+            // Add the fragment to the 'fragmentContainer' FrameLayout
 
-        intent.putExtra(EXTRA_MESSAGE, server_address);
-        startActivity(intent);*/
-
-        server_address = "https://apps.myles.hk/sms_manager/";
-        doValidate(server_address);
-    }
-
-    public void alert(String alert_text) {
-        new AlertDialog.Builder(this)
-                .setTitle("Server Address")
-                .setMessage(alert_text)
-                .setNeutralButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                    }
-                })
-                .setIcon(android.R.drawable.ic_dialog_alert)
-                .show();
-    }
-
-    public void doValidate(final String server_address) {
-        RequestQueue mRequestQueue;
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.fragmentContainer, serverConfigFragment).commit();
+        }
+        /*RequestQueue mRequestQueue;
         // Instantiate the cache
         Cache cache = new DiskBasedCache(getCacheDir(), 1024 * 1024); // 1MB cap
         // Set up the network to use HttpURLConnection as the HTTP client.
@@ -81,7 +68,27 @@ public class MainActivity extends AppCompatActivity {
         // Instantiate the RequestQueue with the cache and network.
         mRequestQueue = new RequestQueue(cache, network);
         // Start the queue
-        mRequestQueue.start();
+        mRequestQueue.start();*/
+    }
+
+    public void onFragmentInteraction(Uri uri) {
+        //TODO: do something with uri
+    }
+
+    /**
+     * Called when user clicks Validate button
+     **/
+    public void validateServer(View view) {
+        serverAddressEditText = (EditText) findViewById(R.id.serverAddressEditText); //check this point carefully on your program
+
+        String server_address = serverAddressEditText.getText().toString();
+
+        server_address = "https://apps.myles.hk/sms_manager/";
+        doValidate(server_address);
+    }
+
+    public void doValidate(final String server_address) {
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, server_address, new Response.Listener<String>() {
             @Override
@@ -95,7 +102,17 @@ public class MainActivity extends AppCompatActivity {
 
                     if (Objects.equals(resultStr, "true")) {
                         // TODO: save server address
-                        navigateToMessageView(server_address);
+                        // Create new fragment and transaction
+                        Fragment statusFragment = new StatusFragment();
+                        Bundle bundle = new Bundle();
+                        bundle.putString("address", server_address);
+                        statusFragment.setArguments(bundle);
+
+                        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+
+                        // Replace whatever is in the fragment_container view with this fragment,
+                        // and add the transaction to the back stack if needed
+                        transaction.replace(R.id.fragmentContainer, statusFragment).commit();
                     } else {
                         alert("Validation failed. Try again.");
                     }
@@ -118,13 +135,21 @@ public class MainActivity extends AppCompatActivity {
             }
 
         };
-        mRequestQueue.add(stringRequest);
+        requestQueue.add(stringRequest);
 
     }
 
-    public void navigateToMessageView(String server_address) {
-        Intent intent = new Intent(this, DisplayMessageActivity.class);
-        intent.putExtra(EXTRA_MESSAGE, server_address);
-        startActivity(intent);
+    public void alert(String alert_text) {
+        new AlertDialog.Builder(this)
+                .setTitle("Server Address")
+                .setMessage(alert_text)
+                .setNeutralButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                })
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
     }
 }
