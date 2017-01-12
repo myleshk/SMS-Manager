@@ -6,6 +6,8 @@
     <TableLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
         android:layout_marginTop="20dp">
 
         <TableRow
@@ -17,20 +19,24 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:focusable="false"
-                android:text="Server address:"
+                android:text="@string/server_address"
                 android:textSize="18sp" />
+
         </TableRow>
 
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="30dp"
             android:gravity="center">
 
             <TextView
                 android:id="@+id/server_address_show"
-                android:layout_width="match_parent"
-                android:layout_height="50dip"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:focusable="false"
+                android:gravity="center"
                 android:text="@string/unknown"
                 android:textSize="18sp" />
         </TableRow>
@@ -44,20 +50,23 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:focusable="false"
-                android:text="Status:"
+                android:text="@string/status"
                 android:textSize="18sp" />
         </TableRow>
 
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginBottom="30dp"
             android:gravity="center">
 
             <TextView
                 android:id="@+id/server_status_show"
-                android:layout_width="match_parent"
-                android:layout_height="50dip"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:focusable="false"
+                android:gravity="center"
                 android:text="@string/unknown"
                 android:textSize="18sp" />
         </TableRow>
@@ -71,22 +80,40 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:focusable="false"
-                android:text="Last connection:"
+                android:text="@string/last_connection"
                 android:textSize="18sp" />
         </TableRow>
 
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginBottom="30dp"
             android:gravity="center">
 
             <TextView
                 android:id="@+id/last_connection_show"
-                android:layout_width="match_parent"
-                android:layout_height="50dip"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:focusable="false"
+                android:gravity="center"
                 android:text="@string/unknown"
                 android:textSize="18sp" />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center">
+
+            <Button
+                android:id="@+id/toEditButton"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:onClick="navigateToConfig"
+                android:text="@string/change_server" />
         </TableRow>
     </TableLayout>
 

@@ -9,9 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-
 
 /**
  * A simple {@link Fragment} subclass.
@@ -81,11 +78,18 @@ public class StatusFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (server_address != null && !server_address.isEmpty()) {
-            setServerAddress(server_address);
-            setServerStatus("Connected");
-            setLastConnection(new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime()));
+
+        MainActivity mainActivity = (MainActivity) getActivity();
+        // read server_address from args first then fallback to storage
+        if (server_address == null || server_address.isEmpty()) {
+            server_address = mainActivity.getServerAddress();
         }
+
+        //hide keyboard
+        mainActivity.hideKeyboard();
+
+        //connect to server
+        mainActivity.tryConnect(server_address);
     }
 
     @Override
@@ -103,23 +107,5 @@ public class StatusFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
-    }
-
-    public void setServerAddress(String address) {
-        TextView textView = (TextView) getView().findViewById(R.id.server_address_show);
-        textView.setText("");
-        textView.setText(address);
-    }
-
-    public void setServerStatus(String status) {
-        TextView textView = (TextView) getView().findViewById(R.id.server_status_show);
-        textView.setText("");
-        textView.setText(status);
-    }
-
-    public void setLastConnection(String time) {
-        TextView textView = (TextView) getView().findViewById(R.id.last_connection_show);
-        textView.setText("");
-        textView.setText(time);
     }
 }

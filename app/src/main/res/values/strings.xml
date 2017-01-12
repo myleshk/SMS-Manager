@@ -1,10 +1,13 @@
 <resources>
+    <string name="default_server">https://apps.myles.hk/sms_manager/</string>
     <string name="app_name">SMS Manager</string>
     <string name="enter_server_address_title">Server URL or IP address:</string>
     <string name="enter_server_address">Enter server address</string>
     <string name="button_validate">Validate</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="unknown">Unknown</string>
+    <string name="preference_file_key">hk.myles.smsmanager.store</string>
+    <string name="change_server">Change Server</string>
+    <string name="last_connection">Last connection:</string>
+    <string name="status">Status:</string>
+    <string name="server_address">Server address:</string>
 </resources>
