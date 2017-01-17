@@ -313,6 +313,7 @@ public class MainActivity extends FragmentActivity
                     public void onResponse(String response) {
                         //Creating JsonObject from response String
                         JSONObject jsonObject = null;
+                        Log.e("server_response", response);
                         try {
                             jsonObject = new JSONObject(response);
                         } catch (JSONException e) {
