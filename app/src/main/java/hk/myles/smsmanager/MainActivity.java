@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -35,6 +36,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
 
 
 public class MainActivity extends FragmentActivity
@@ -48,7 +50,9 @@ public class MainActivity extends FragmentActivity
 
             String sender = b.getString("sender");
             String message = b.getString("body");
-            reportMessage(sender, message);
+            String slot = b.getString("slot");
+            String timestamp = b.getString("timestamp");
+            reportMessage(sender, message, slot, timestamp);
         }
     };
 
@@ -86,11 +90,39 @@ public class MainActivity extends FragmentActivity
 
     }
 
+    @Override
+    protected void onDestroy() {
+        unregisterReceiver(smsListener);
+        Log.e("", "Unregistered");
+        super.onDestroy();
+    }
+
     public String getServerAddress() {
         // get stored server address
-        SharedPreferences sharedPref = getSharedPreferences(
+        SharedPreferences sharedPreferences = getSharedPreferences(
                 getString(R.string.preference_file_key), Context.MODE_PRIVATE);
-        return sharedPref.getString("server_address", getString(R.string.default_server));
+        return sharedPreferences.getString("server_address", getString(R.string.default_server));
+    }
+
+    private String getDeviceId() {
+        // check stored device id
+        SharedPreferences sharedPreferences = getSharedPreferences(
+                getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+        String device_id = sharedPreferences.getString("device_id", null);
+
+        // generate id if not exists
+        if (device_id == null) {
+            device_id = generateDeviceId();
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString("device_id", device_id);
+            editor.apply();
+        }
+
+        return device_id;
+    }
+
+    public String generateDeviceId() {
+        return UUID.randomUUID().toString();
     }
 
     public void onFragmentInteraction(Uri uri) {
@@ -99,9 +131,6 @@ public class MainActivity extends FragmentActivity
 
     public void navigateToConfig(View view) {
         ServerConfigFragment serverConfigFragment = new ServerConfigFragment();
-//        Bundle bundle = new Bundle();
-//        bundle.putString("address", getServerAddress());
-//        serverConfigFragment.setArguments(bundle);
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
@@ -133,12 +162,6 @@ public class MainActivity extends FragmentActivity
         // Replace whatever is in the fragment_container view with this fragment,
         // and add the transaction to the back stack if needed
         transaction.replace(R.id.fragmentContainer, statusFragment, "STATUS_FRAGMENT").commit();
-
-        /*SharedPreferences sharedPref = getSharedPreferences(
-                getString(R.string.preference_file_key), Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putString("server_address", server_address);
-        editor.commit();*/
     }
 
     public boolean validateURL(String server_address) {
@@ -259,7 +282,7 @@ public class MainActivity extends FragmentActivity
         toast.show();
     }
 
-    public void reportMessage(final String sender, final String body) {
+    public void reportMessage(final String sender, final String body, final String slot, final String timestamp) {
         // display to user
         toast(sender, body);
 
@@ -274,7 +297,10 @@ public class MainActivity extends FragmentActivity
         try {
             reportJson.put("sender", sender);
             reportJson.put("body", body);
-            reportString = reportJson.toString(4);
+            reportJson.put("slot", slot);
+            reportJson.put("timestamp", timestamp);
+            reportString = reportJson.toString();
+            Log.e("reportStr", reportString);
         } catch (JSONException e) {
             e.printStackTrace();
         }
