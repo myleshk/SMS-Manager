@@ -205,7 +205,7 @@ public class MainActivity extends FragmentActivity
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> parameters = new HashMap<String, String>();
-                parameters.put("data", "Connect");
+                parameters.put("action", "connect");
 
                 return parameters;
             }
@@ -299,6 +299,7 @@ public class MainActivity extends FragmentActivity
             reportJson.put("body", body);
             reportJson.put("slot", slot);
             reportJson.put("timestamp", timestamp);
+            reportJson.put("uuid", getDeviceId());
             reportString = reportJson.toString();
             Log.e("reportStr", reportString);
         } catch (JSONException e) {
@@ -339,6 +340,7 @@ public class MainActivity extends FragmentActivity
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> parameters = new HashMap<String, String>();
+                parameters.put("action", "report");
                 parameters.put("data", finalReportString);
 
                 return parameters;
