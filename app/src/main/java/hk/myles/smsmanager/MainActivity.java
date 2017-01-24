@@ -139,6 +139,61 @@ public class MainActivity extends FragmentActivity
         transaction.replace(R.id.fragmentContainer, serverConfigFragment, "CONFIG_FRAGMENT").commit();
     }
 
+    public void showCode(View view) {
+        final String server_address = getServerAddress();
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, server_address,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        //Creating JsonObject from response String
+                        JSONObject jsonObject = null;
+                        Log.e("server_response", response);
+                        try {
+                            jsonObject = new JSONObject(response);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        //extracting json array from response string
+                        //get value from jsonRow
+                        String resultStr = null;
+                        String simple_id;
+                        try {
+                            resultStr = jsonObject.getString("success");
+                            simple_id = jsonObject.getString("simple_id");
+
+                            // show simple code if ok
+                            if (simple_id.length() > 0) {
+                                toast("Verification Code", simple_id);
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                        // finished parsing JSON response
+                        updateStatus(server_address, Objects.equals(resultStr, "true"));
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        updateStatus(server_address, false);
+                    }
+                }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> parameters = new HashMap<String, String>();
+                parameters.put("action", "get_simple_id");
+                parameters.put("uuid", getDeviceId());
+
+                return parameters;
+            }
+        };
+
+        requestQueue.add(stringRequest);
+    }
+
     /**
      * Called when user clicks Validate button
      **/
@@ -277,6 +332,9 @@ public class MainActivity extends FragmentActivity
 
     public void toast(String sender, String toast_text) {
         int duration = Toast.LENGTH_LONG;
+        if (sender.length() != 0) {
+            toast_text = sender + ": " + toast_text;
+        }
         Toast toast = Toast.makeText(this,
                 toast_text, duration);
         toast.show();

@@ -114,7 +114,22 @@
                 android:layout_weight="1"
                 android:onClick="navigateToConfig"
                 android:text="@string/change_server" />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <Button
+                android:id="@+id/showCodeButton"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:onClick="showCode"
+                android:text="@string/show_code" />
         </TableRow>
     </TableLayout>
+
 
 </FrameLayout>
