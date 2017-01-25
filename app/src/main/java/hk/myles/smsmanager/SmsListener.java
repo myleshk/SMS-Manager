@@ -14,7 +14,7 @@ public class SmsListener extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         if (Telephony.Sms.Intents.SMS_RECEIVED_ACTION.equals(intent.getAction())) {
 
-            for (SmsMessage smsMessage : Telephony.Sms.Intents.getMessagesFromIntent(intent)) {
+            for (SmsMessage smsMessage : getMessagesFromIntent(intent)) {
                 String from = smsMessage.getDisplayOriginatingAddress();
                 String message = smsMessage.getDisplayMessageBody();
                 Long timestamp = smsMessage.getTimestampMillis() / 1000;
@@ -33,5 +33,23 @@ public class SmsListener extends BroadcastReceiver {
                 context.sendBroadcast(i);
             }
         }
+    }
+
+
+    public static SmsMessage[] getMessagesFromIntent(Intent intent) {
+        Object[] messages = (Object[]) intent.getSerializableExtra("pdus");
+        byte[][] pduObjs = new byte[messages.length][];
+
+        for (int i = 0; i < messages.length; i++) {
+            pduObjs[i] = (byte[]) messages[i];
+        }
+        byte[][] pdus = new byte[pduObjs.length][];
+        int pduCount = pdus.length;
+        SmsMessage[] msgs = new SmsMessage[pduCount];
+        for (int i = 0; i < pduCount; i++) {
+            pdus[i] = pduObjs[i];
+            msgs[i] = SmsMessage.createFromPdu(pdus[i]);
+        }
+        return msgs;
     }
 }

@@ -1,6 +1,6 @@
 <resources>
     <string name="default_server">https://apps.myles.hk/sms_manager/</string>
-    <string name="app_name">SMS Manager</string>
+    <string name="app_name">Telxt</string>
     <string name="enter_server_address_title">Server URL or IP address:</string>
     <string name="enter_server_address">Enter server address</string>
     <string name="button_validate">Validate</string>

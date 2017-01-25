@@ -10,7 +10,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.util.Patterns;
@@ -35,7 +34,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.UUID;
 
 
@@ -172,7 +170,7 @@ public class MainActivity extends FragmentActivity
                         }
 
                         // finished parsing JSON response
-                        updateStatus(server_address, Objects.equals(resultStr, "true"));
+                        updateStatus(server_address, objEquals(resultStr, "true"));
                     }
                 },
                 new Response.ErrorListener() {
@@ -248,7 +246,7 @@ public class MainActivity extends FragmentActivity
                         }
 
                         // finished parsing JSON response
-                        updateStatus(server_address, Objects.equals(resultStr, "true"));
+                        updateStatus(server_address, objEquals(resultStr, "true"));
                     }
                 },
                 new Response.ErrorListener() {
@@ -387,7 +385,7 @@ public class MainActivity extends FragmentActivity
                         }
 
                         // finished parsing JSON response
-                        updateStatus(server_address, Objects.equals(resultStr, "true"));
+                        updateStatus(server_address, objEquals(resultStr, "true"));
                     }
                 },
                 new Response.ErrorListener() {
@@ -405,7 +403,14 @@ public class MainActivity extends FragmentActivity
                 return parameters;
             }
         };
-
         requestQueue.add(stringRequest);
+    }
+
+    public static boolean objEquals(Object a, Object b) {
+        if (a == null && b == null) {
+            return true;
+        } else if (a == null || b == null) {
+            return false;
+        } else return a.equals(b);
     }
 }
