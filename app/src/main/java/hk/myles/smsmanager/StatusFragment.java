@@ -1,13 +1,11 @@
 package hk.myles.smsmanager;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 
 /**
@@ -26,7 +24,6 @@ public class StatusFragment extends Fragment {
 
     // TODO: Rename and change types of parameters
     private String server_address;
-    private String mParam2;
 
     private OnFragmentInteractionListener mListener;
 
@@ -57,7 +54,6 @@ public class StatusFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             server_address = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
 
@@ -68,28 +64,17 @@ public class StatusFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_status, container, false);
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
     @Override
     public void onResume() {
         super.onResume();
 
         MainActivity mainActivity = (MainActivity) getActivity();
-        // read server_address from args first then fallback to storage
-        if (server_address == null || server_address.isEmpty()) {
-            server_address = mainActivity.getServerAddress();
-        }
 
         //hide keyboard
         mainActivity.hideKeyboard();
 
         //connect to server
-        mainActivity.tryConnect(server_address);
+        mainActivity.tryConnect();
     }
 
     @Override
